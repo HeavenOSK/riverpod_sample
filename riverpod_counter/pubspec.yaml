@@ -1,0 +1,22 @@
+name: riverpodcounter
+description: A new Flutter application.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">= 1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.10.0
+  hooks_riverpod: ^0.1.0
+  state_notifier: ^0.5.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  pedantic_mono: any
+
+flutter:
+
+  uses-material-design: true
