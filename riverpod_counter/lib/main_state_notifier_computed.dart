@@ -90,6 +90,7 @@ class _Count extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final counter = useProvider(_countAProvider);
+    print('rebuilt');
     return Text(counter.toString());
   }
 }
