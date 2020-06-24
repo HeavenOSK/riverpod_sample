@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:state_notifier/state_notifier.dart';
 
@@ -8,6 +9,7 @@ class Count {
     this.countA = 0,
     this.countB = 0,
   });
+
   final int countA;
   final int countB;
 
@@ -48,6 +50,14 @@ void main() {
   );
 }
 
+@hwidget
+Widget example() {
+  final counter = useProvider(
+    _counterProvider.state.select((value) => value.countA),
+  );
+  return Text(counter.toString());
+}
+
 class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
@@ -57,7 +67,7 @@ class MyApp extends HookWidget {
       home: Scaffold(
         appBar: AppBar(title: Text('Example')),
         body: Center(
-          child: _Count(),
+          child: example(),
         ),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -77,17 +87,5 @@ class MyApp extends HookWidget {
         ),
       ),
     );
-  }
-}
-
-class _Count extends HookWidget {
-  const _Count({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final counter = useProvider(
-      _counterProvider.state.select((value) => value.countA),
-    );
-    return Text(counter.toString());
   }
 }
