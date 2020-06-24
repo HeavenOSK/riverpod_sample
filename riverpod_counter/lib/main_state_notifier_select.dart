@@ -40,10 +40,6 @@ class Counter extends StateNotifier<Count> {
 
 final _counterProvider = StateNotifierProvider((ref) => Counter());
 
-final _countAProvider = Computed<int>((read) {
-  return read(_counterProvider.state).countA;
-});
-
 void main() {
   runApp(
     ProviderScope(
@@ -89,8 +85,9 @@ class _Count extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final counter = useProvider(_countAProvider);
-    print('rebuilt');
+    final counter = useProvider(
+      _counterProvider.state.select((value) => value.countA),
+    );
     return Text(counter.toString());
   }
 }
