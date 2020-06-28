@@ -8,16 +8,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.10.0
-  hooks_riverpod: ^0.1.0
-  state_notifier: ^0.5.0
+  flutter_hooks:
+  hooks_riverpod:
+  state_notifier:
   functional_widget_annotation:
 builders:
   functional_widget:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic_mono: any
+  pedantic_mono:
   build_runner:
   functional_widget:
 flutter:

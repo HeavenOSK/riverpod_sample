@@ -25,8 +25,6 @@ void main() {
 
 @hwidget
 Widget _myApp() {
-  final counterNotifier = useProvider(counterProvider);
-
   return MaterialApp(
     home: Scaffold(
       appBar: AppBar(title: Text('Example')),
@@ -34,9 +32,7 @@ Widget _myApp() {
         child: _Count(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          counterNotifier.increment();
-        },
+        onPressed: () {},
         child: Icon(Icons.add),
       ),
     ),

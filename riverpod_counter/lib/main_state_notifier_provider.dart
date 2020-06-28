@@ -9,7 +9,7 @@ class Counter extends StateNotifier<int> {
   void increment() => state++;
 }
 
-final counterProvider = StateNotifierProvider((ref) => Counter());
+final counterProvider = AutoDisposeStateNotifierProvider((ref) => Counter());
 
 void main() {
   runApp(
