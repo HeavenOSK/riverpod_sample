@@ -14,6 +14,9 @@ class Counter extends StateNotifier<int> {
 }
 
 final counterProvider = AutoDisposeStateNotifierProvider<Counter>((ref) {
+  ref.onDispose(() {
+    print('disposed');
+  });
   return Counter();
 });
 
@@ -30,7 +33,7 @@ Widget myApp() {
   return MaterialApp(
     routes: {
       '/': (_) => FirstPage(),
-      'secondPage': (_) => SecondPage(),
+      '$SecondPage': (_) => SecondPage(),
     },
   );
 }
@@ -58,11 +61,27 @@ Widget firstPage() {
 @hwidget
 Widget secondPage() {
   final counter = useProvider(counterProvider);
+  final context = useContext();
 
   return Scaffold(
     appBar: AppBar(title: Text('Second Page')),
     body: Center(
-      child: Count(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Count(),
+          RaisedButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (_) {
+                    return Dialog();
+                  });
+            },
+            child: Text('Dialog'),
+          ),
+        ],
+      ),
     ),
     floatingActionButton: FloatingActionButton(
       onPressed: () {
@@ -78,4 +97,33 @@ Widget count() {
   final count = useProvider(counterProvider.state);
 
   return Text(count.toString());
+}
+
+@hwidget
+Widget dialog() {
+  final context = useContext();
+  final count = useProvider(counterProvider.state);
+  final counter = useProvider(counterProvider);
+  return AlertDialog(
+    content: IntrinsicHeight(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 80),
+        child: Center(child: Text(count.toString())),
+      ),
+    ),
+    actions: <Widget>[
+      RaisedButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: Text('閉じる'),
+      ),
+      RaisedButton(
+        onPressed: () {
+          counter.increment();
+        },
+        child: Icon(Icons.add),
+      ),
+    ],
+  );
 }

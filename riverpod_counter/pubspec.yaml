@@ -17,7 +17,6 @@ builders:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic_mono:
   build_runner:
   functional_widget:
 flutter:

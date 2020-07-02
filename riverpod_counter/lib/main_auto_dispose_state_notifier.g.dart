@@ -33,3 +33,10 @@ class Count extends HookWidget {
   @override
   Widget build(BuildContext _context) => count();
 }
+
+class Dialog extends HookWidget {
+  const Dialog({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext _context) => dialog();
+}
