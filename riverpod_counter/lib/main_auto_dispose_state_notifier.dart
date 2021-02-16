@@ -1,24 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:state_notifier/state_notifier.dart';
-
-part 'main_auto_dispose_state_notifier.g.dart';
 
 class Counter extends StateNotifier<int> {
   Counter() : super(0);
 
   void increment() => state++;
 }
-
-final counterProvider = AutoDisposeStateNotifierProvider<Counter>((ref) {
-  ref.onDispose(() {
-    print('disposed');
-  });
-  return Counter();
-});
 
 void main() {
   runApp(
@@ -28,102 +18,128 @@ void main() {
   );
 }
 
-@hwidget
-Widget myApp() {
-  return MaterialApp(
-    routes: {
-      '/': (_) => FirstPage(),
-      '$SecondPage': (_) => SecondPage(),
-    },
-  );
-}
+class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
 
-@hwidget
-Widget firstPage() {
-  final context = useContext();
-  return Scaffold(
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RaisedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed('$SecondPage');
-            },
-            child: Text('Next Page'),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-@hwidget
-Widget secondPage() {
-  final counter = useProvider(counterProvider);
-  final context = useContext();
-
-  return Scaffold(
-    appBar: AppBar(title: Text('Second Page')),
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Count(),
-          RaisedButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (_) {
-                    return Dialog();
-                  });
-            },
-            child: Text('Dialog'),
-          ),
-        ],
-      ),
-    ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        counter.increment();
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      routes: {
+        '/': (_) => FirstPage(),
+        '$SecondPage': (_) => SecondPage(),
       },
-      child: Icon(Icons.add),
-    ),
-  );
+    );
+  }
 }
 
-@hwidget
-Widget count() {
-  final count = useProvider(counterProvider.state);
+class FirstPage extends HookWidget {
+  const FirstPage({Key key}) : super(key: key);
 
-  return Text(count.toString());
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('$SecondPage');
+              },
+              child: Text('Next Page'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-@hwidget
-Widget dialog() {
-  final context = useContext();
-  final count = useProvider(counterProvider.state);
-  final counter = useProvider(counterProvider);
-  return AlertDialog(
-    content: IntrinsicHeight(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 80),
-        child: Center(child: Text(count.toString())),
+class SecondPage extends HookWidget {
+  const SecondPage({Key key}) : super(key: key);
+
+  static final counterProvider =
+      StateNotifierProvider.autoDispose<Counter>((ref) {
+    ref.onDispose(() {
+      print('disposed');
+    });
+    return Counter();
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final counter = useProvider(counterProvider);
+    final context = useContext();
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Second Page')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Count(),
+            RaisedButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return Dialog();
+                    });
+              },
+              child: Text('Dialog'),
+            ),
+          ],
+        ),
       ),
-    ),
-    actions: <Widget>[
-      RaisedButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: Text('閉じる'),
-      ),
-      RaisedButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           counter.increment();
         },
         child: Icon(Icons.add),
       ),
-    ],
-  );
+    );
+  }
+}
+
+class Count extends HookWidget {
+  const Count({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final count = useProvider(SecondPage.counterProvider.state);
+
+    return Text(count.toString());
+  }
+}
+
+class Dialog extends HookWidget {
+  const Dialog({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final count = useProvider(SecondPage.counterProvider.state);
+    final counter = useProvider(SecondPage.counterProvider);
+    return AlertDialog(
+      content: IntrinsicHeight(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 80),
+          child: Center(child: Text(count.toString())),
+        ),
+      ),
+      actions: <Widget>[
+        RaisedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('閉じる'),
+        ),
+        RaisedButton(
+          onPressed: () {
+            counter.increment();
+          },
+          child: Icon(Icons.add),
+        ),
+      ],
+    );
+  }
 }
